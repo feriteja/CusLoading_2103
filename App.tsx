@@ -78,25 +78,21 @@ const App = () => {
           containerRotate,
         ]}>
         {collorArray.map((color, idx) => (
-          <View
+          <Animated.View
             key={idx}
             style={[
+              Styles.box,
               {
                 position: 'absolute',
+                backgroundColor: color,
                 transform: [
                   {rotate: `${(360 / collorArray.length) * idx}deg`},
                   {translateX: circleDiameter / 2},
                 ],
               },
-            ]}>
-            <Animated.View
-              style={[
-                Styles.box,
-                {backgroundColor: color, borderRadius: 99},
-                boxTransform,
-              ]}
-            />
-          </View>
+              boxTransform,
+            ]}
+          />
         ))}
       </Animated.View>
     </View>
