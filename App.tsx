@@ -48,7 +48,7 @@ const App = () => {
     );
   };
 
-  const borderRadBoxFunc = () => {
+  const borderRadiusBoxFunc = () => {
     borderRadBox.value = withRepeat(
       withSequence(
         withTiming(45 / 2, {duration: 2000}),
@@ -61,7 +61,7 @@ const App = () => {
 
   useEffect(() => {
     rotateContainerFunc();
-    borderRadBoxFunc();
+    borderRadiusBoxFunc();
   }, []);
 
   return (
