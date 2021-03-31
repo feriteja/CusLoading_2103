@@ -19,21 +19,65 @@ const collorArray = [
   '#9400d3',
 ];
 
+const BoxT = ({
+  color,
+  index,
+  circleDiameter,
+}: {
+  color: string;
+  index: number;
+  circleDiameter: number;
+}) => {
+  const borderRadBox = useRef(useSharedValue(45 / 4)).current;
+
+  const borderRadiusBoxFunc = () => {
+    borderRadBox.value = withRepeat(
+      withSequence(
+        withTiming(45 / 2, {duration: 2000}),
+        withTiming(0, {duration: 4000}),
+        withTiming(45 / 4, {duration: 2000}),
+      ),
+      -1,
+    );
+  };
+
+  const boxTransform = useAnimatedStyle(() => {
+    return {
+      borderRadius: borderRadBox.value,
+    };
+  });
+
+  useEffect(() => {
+    borderRadiusBoxFunc();
+  }, []);
+
+  return (
+    <Animated.View
+      key={index}
+      style={[
+        Styles.box,
+        {
+          position: 'absolute',
+          backgroundColor: color,
+          transform: [
+            {rotate: `${(360 / collorArray.length) * index}deg`},
+            {translateX: circleDiameter / 2},
+          ],
+        },
+        boxTransform,
+      ]}
+    />
+  );
+};
+
 const App = () => {
   const rotateContainerState = useRef(useSharedValue(0)).current;
-  const borderRadBox = useRef(useSharedValue(45 / 4)).current;
   const circleDiameter = 200;
 
   const containerRotate = useAnimatedStyle(() => {
     return {
       opacity: 1,
       transform: [{rotate: `${rotateContainerState.value}deg`}],
-    };
-  });
-
-  const boxTransform = useAnimatedStyle(() => {
-    return {
-      borderRadius: borderRadBox.value,
     };
   });
 
@@ -48,20 +92,8 @@ const App = () => {
     );
   };
 
-  const borderRadiusBoxFunc = () => {
-    borderRadBox.value = withRepeat(
-      withSequence(
-        withTiming(45 / 2, {duration: 2000}),
-        withTiming(0, {duration: 4000}),
-        withTiming(45 / 4, {duration: 2000}),
-      ),
-      -1,
-    );
-  };
-
   useEffect(() => {
     rotateContainerFunc();
-    borderRadiusBoxFunc();
   }, []);
 
   return (
@@ -78,20 +110,11 @@ const App = () => {
           containerRotate,
         ]}>
         {collorArray.map((color, idx) => (
-          <Animated.View
+          <BoxT
             key={idx}
-            style={[
-              Styles.box,
-              {
-                position: 'absolute',
-                backgroundColor: color,
-                transform: [
-                  {rotate: `${(360 / collorArray.length) * idx}deg`},
-                  {translateX: circleDiameter / 2},
-                ],
-              },
-              boxTransform,
-            ]}
+            color={color}
+            index={idx}
+            circleDiameter={circleDiameter}
           />
         ))}
       </Animated.View>
