@@ -33,9 +33,9 @@ const BoxT = ({
   const borderRadiusBoxFunc = () => {
     borderRadBox.value = withRepeat(
       withSequence(
-        withTiming(45 / 2, {duration: 2000}),
-        withTiming(0, {duration: 4000}),
-        withTiming(45 / 4, {duration: 2000}),
+        withTiming(45 / 2, {duration: 1000, easing: Easing.linear}),
+        withTiming(0, {duration: 2000, easing: Easing.linear}),
+        withTiming(45 / 4, {duration: 1000, easing: Easing.linear}),
       ),
       -1,
     );
@@ -72,21 +72,36 @@ const BoxT = ({
 
 const App = () => {
   const rotateContainerState = useRef(useSharedValue(0)).current;
+  const rotateText = useRef(useSharedValue(0)).current;
   const circleDiameter = 200;
 
   const containerRotate = useAnimatedStyle(() => {
     return {
-      opacity: 1,
       transform: [{rotate: `${rotateContainerState.value}deg`}],
+    };
+  });
+  const StyletextRotate = useAnimatedStyle(() => {
+    return {
+      transform: [{rotate: `${rotateText.value}deg`}],
     };
   });
 
   const rotateContainerFunc = () => {
     rotateContainerState.value = withRepeat(
       withSequence(
+        withTiming(160, {duration: 1000, easing: Easing.linear}),
+        withTiming(-160, {duration: 2000, easing: Easing.linear}),
+        withTiming(0, {duration: 1000, easing: Easing.linear}),
+      ),
+      -1,
+    );
+  };
+  const rotateTextFunc = () => {
+    rotateText.value = withRepeat(
+      withSequence(
+        withTiming(-160, {duration: 1000, easing: Easing.linear}),
         withTiming(160, {duration: 2000, easing: Easing.linear}),
-        withTiming(-160, {duration: 4000, easing: Easing.linear}),
-        withTiming(0, {duration: 2000, easing: Easing.linear}),
+        withTiming(0, {duration: 1000, easing: Easing.linear}),
       ),
       -1,
     );
@@ -94,6 +109,7 @@ const App = () => {
 
   useEffect(() => {
     rotateContainerFunc();
+    rotateTextFunc();
   }, []);
 
   return (
@@ -109,6 +125,9 @@ const App = () => {
           },
           containerRotate,
         ]}>
+        <Animated.Text style={[{fontWeight: 'bold'}, StyletextRotate]}>
+          Loading
+        </Animated.Text>
         {collorArray.map((color, idx) => (
           <BoxT
             key={idx}
